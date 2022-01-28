@@ -11,6 +11,8 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export default function CharArcade() {
     const [mensagem, setMensagem] = React.useState('');
     const [listMessages, setListMessages] = React.useState([]);
+    const router = useRouter();
+    const { username } = router.query;
 
     React.useEffect(() => {
         supabaseClient
