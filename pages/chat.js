@@ -1,21 +1,45 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
 import React from 'react';
 import appConfig from '../config.json';
+
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function CharArcade() {
     const [mensagem, setMensagem] = React.useState('');
     const [listMessages, setListMessages] = React.useState([]);
+    const router = useRouter();
+    const { username } = router.query;
+
+    React.useEffect(() => {
+        supabaseClient
+            .from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log('Dados da consulta:', data);
+                setListMessages(data);
+            });
+    }, []);
 
     function handleNewMessage(newMessage) {
         const mensagem = {
-            id: listMessages.length + 1,
-            de: 'raianwz',
+            de: username,
             texto: newMessage,
-        }
-        setListMessages([
-            mensagem,
-            ...listMessages
-        ]);
+        };
+        supabaseClient
+            .from('mensagens')
+            .insert([mensagem])
+            .then(({ data }) => {
+                console.log(`Criando mensagem: ${data[0]}`);
+                setListMessages([
+                    data[0],
+                    ...listMessages,
+                ]);
+            });
         setMensagem('');
     }
 
@@ -57,7 +81,7 @@ export default function CharArcade() {
                     }}
                 >
 
-                  <MessageList mensagens={listMessages} /> 
+                    <MessageList mensagens={listMessages} />
 
                     <Box
                         as="form"
@@ -67,17 +91,17 @@ export default function CharArcade() {
                         }}
                     >
                         <TextField
-                        value={mensagem}
-                        onChange={(e)=>{
-                            const valor = e.target.value;
-                            setMensagem(valor);
-                        }}
-                        onKeyPress={(e)=>{
-                            if (e.key === 'Enter'){
-                                e.preventDefault();
-                                handleNewMessage(mensagem)
-                            }
-                        }}
+                            value={mensagem}
+                            onChange={(e) => {
+                                const valor = e.target.value;
+                                setMensagem(valor);
+                            }}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleNewMessage(mensagem)
+                                }
+                            }}
                             placeholder="Insira sua mensagem aqui..."
                             type="textarea"
                             styleSheet={{
@@ -117,7 +141,6 @@ function Header() {
 }
 
 function MessageList(props) {
-    // console.log(props);
     return (
         <Box
             tag="ul"
@@ -130,53 +153,53 @@ function MessageList(props) {
                 marginBottom: '16px',
             }}
         >
-        {props.mensagens.map((mensagem)=>{
-            return(
-                <Text
-                key={mensagem.id}
-                tag="li"
-                styleSheet={{
-                    borderRadius: '5px',
-                    padding: '6px',
-                    marginBottom: '12px',
-                    hover: {
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
-                    }
-                }}
-            >
-                <Box
-                    styleSheet={{
-                        marginBottom: '8px',
-                    }}
-                >
-                    <Image
-                        styleSheet={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            display: 'inline-block',
-                            marginRight: '8px',
-                        }}
-                        src={`https://github.com/${mensagem.de}.png`}
-                    />
-                    <Text tag="strong">
-                        {mensagem.de}
-                    </Text>
+            {props.mensagens.map((mensagem) => {
+                return (
                     <Text
+                        key={mensagem.id}
+                        tag="li"
                         styleSheet={{
-                            fontSize: '10px',
-                            marginLeft: '8px',
-                            color: appConfig.theme.colors.neutrals[300],
+                            borderRadius: '5px',
+                            padding: '6px',
+                            marginBottom: '12px',
+                            hover: {
+                                backgroundColor: appConfig.theme.colors.neutrals[700],
+                            }
                         }}
-                        tag="span"
                     >
-                        {(new Date().toLocaleDateString())}
+                        <Box
+                            styleSheet={{
+                                marginBottom: '8px',
+                            }}
+                        >
+                            <Image
+                                styleSheet={{
+                                    width: '20px',
+                                    height: '20px',
+                                    borderRadius: '50%',
+                                    display: 'inline-block',
+                                    marginRight: '8px',
+                                }}
+                                src={`https://github.com/${mensagem.de}.png`}
+                            />
+                            <Text tag="strong">
+                                {mensagem.de}
+                            </Text>
+                            <Text
+                                styleSheet={{
+                                    fontSize: '10px',
+                                    marginLeft: '8px',
+                                    color: appConfig.theme.colors.neutrals[300],
+                                }}
+                                tag="span"
+                            >
+                                {(new Date().toLocaleDateString())}
+                            </Text>
+                        </Box>
+                        {mensagem.texto}
                     </Text>
-                </Box>
-                {mensagem.texto}
-            </Text>
-            )
-        })}
+                )
+            })}
         </Box>
     )
 }
