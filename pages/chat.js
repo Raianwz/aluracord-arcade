@@ -1,12 +1,21 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 import React from 'react';
 import appConfig from '../config.json';
 
 const SUPABASE_ANON_KEY = `${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`;
 const SUPABASE_URL = `https://${process.env.NEXT_PUBLIC_SUPABASE_URL}.supabase.co/`;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function messagesListinerRealTime(addMessage) {
+    return supabaseClient.from('mensagens')
+        .on('INSERT', (liveResp) => { addMessage(liveResp.new); })
+        .subscribe();
+}
+
+
 
 export default function CharArcade() {
     const [mensagem, setMensagem] = React.useState('');
@@ -20,9 +29,26 @@ export default function CharArcade() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log('Dados da consulta:', data);
+                //console.log('Dados da consulta:', data);
                 setListMessages(data);
             });
+    }, []);
+
+    const subscription = messagesListinerRealTime((newMessage) => {
+        console.log('Nova mensagem:', newMessage);
+        console.log('listaDeMensagens', listMessages);
+
+        setListMessages((valorAtualDaLista) => {
+            console.log('Valor Atual:', valorAtualDaLista);
+            return [
+                newMessage,
+                ...valorAtualDaLista,
+            ]
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        }
     }, []);
 
     function handleNewMessage(newMessage) {
@@ -35,10 +61,6 @@ export default function CharArcade() {
             .insert([mensagem])
             .then(({ data }) => {
                 console.log(`Criando mensagem: ${data[0]}`);
-                setListMessages([
-                    data[0],
-                    ...listMessages,
-                ]);
             });
         setMensagem('');
     }
@@ -115,6 +137,11 @@ export default function CharArcade() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
+                        <ButtonSendSticker
+                            onStickerClick={(sticker) => {
+                                handleNewMessage(':sticker:' + sticker);
+                            }}
+                        />
                     </Box>
                 </Box>
             </Box>
@@ -170,6 +197,7 @@ function MessageList(props) {
                         <Box
                             styleSheet={{
                                 marginBottom: '8px',
+                                display: 'flex',
                             }}
                         >
                             <Image
@@ -196,7 +224,19 @@ function MessageList(props) {
                                 {(new Date().toLocaleDateString())}
                             </Text>
                         </Box>
-                        {mensagem.texto}
+                        {mensagem.texto.startsWith(':sticker:')
+                            ? (
+                                <Image styleSheet={{
+                                    maxWidth: '250px',
+                                    maxHeight: '250px'
+                                }} src={mensagem.texto.replace(':sticker:', '')} />
+                            )
+                            : (
+                                mensagem.texto
+                            )
+                        }
+
+                        {/* {mensagem.texto} */}
                     </Text>
                 )
             })}
