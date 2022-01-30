@@ -142,6 +142,35 @@ export default function CharArcade() {
                                 handleNewMessage(':sticker:' + sticker);
                             }}
                         />
+                        <Button
+                            onClick={(e)=>{
+                                e.preventDefault()
+                                if(mensagem.length !== 0 && mensagem.trim() !== ''){
+                                    handleNewMessage(mensagem)
+                                }
+                            }}
+                            buttonColors={{
+                                contrastColor: `${appConfig.theme.colors.primary[500]}`,
+                                mainColor: `${appConfig.theme.colors.neutrals[800]}`,
+                                mainColorLight: `${appConfig.theme.colors.neutrals[400]}`,
+                                mainColorStrong: `${appConfig.theme.colors.neutrals[900]}`
+                              }}
+                            styleSheet={{
+                                borderRadius: '50%',
+                                padding: '0 3px 0 0',
+                                marginLeft: '10px',
+                                minWidth: '50px',
+                                minHeight: '50px',
+                                fontSize: '20px',
+                                marginBottom: '8px',
+                                lineHeight: '0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            iconName="FaTelegramPlane"
+
+                            />
                     </Box>
                 </Box>
             </Box>
