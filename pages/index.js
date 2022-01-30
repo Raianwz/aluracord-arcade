@@ -27,7 +27,7 @@ function Title(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const [username, setUsername] = React.useState('raianwz')
+  const [username, setUsername] = React.useState('')
   const roteamento = useRouter();
 
   return (
