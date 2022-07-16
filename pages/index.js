@@ -141,8 +141,8 @@ export default function PaginaInicial() {
           </Box>
           {/* Photo Area */}
         </Box>
+        <a href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
       </Box>
-      <a href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
     </>
   );
 }
