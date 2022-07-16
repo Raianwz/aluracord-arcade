@@ -100,6 +100,8 @@ export default function PaginaInicial() {
                 mainColorStrong: appConfig.theme.colors.primary[600],
               }}
             />
+             <a styleSheet={{marginTop: '25px'}}
+            href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
           </Box>
           {/* Formulário */}
 
@@ -140,11 +142,6 @@ export default function PaginaInicial() {
             </Text>
           </Box>
           {/* Photo Area */}
-           <a styleSheet={{
-           color:appConfig.theme.colors.neutrals[200],
-           marginTop: '20px',
-           }}
-           href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
         </Box>
       </Box>
     </>
