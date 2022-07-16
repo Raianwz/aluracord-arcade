@@ -100,7 +100,6 @@ export default function PaginaInicial() {
                 mainColorStrong: appConfig.theme.colors.primary[600],
               }}
             />
-            <a href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
           </Box>
           {/* Formulário */}
 
@@ -143,6 +142,7 @@ export default function PaginaInicial() {
           {/* Photo Area */}
         </Box>
       </Box>
+      <a href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
     </>
   );
 }
