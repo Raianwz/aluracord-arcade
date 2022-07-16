@@ -70,7 +70,6 @@ export default function PaginaInicial() {
             <Title tag="h2">Insira uma ficha!</Title>
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
               {appConfig.name}
-              <a href="https://github.com/Raianwz/aluracord-arcade/">Repositorio</a>
             </Text>
 
             <TextField
@@ -101,6 +100,7 @@ export default function PaginaInicial() {
                 mainColorStrong: appConfig.theme.colors.primary[600],
               }}
             />
+            <a href="https://github.com/Raianwz/aluracord-arcade/">Código Fonte</a>
           </Box>
           {/* Formulário */}
 
